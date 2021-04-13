@@ -25,7 +25,7 @@ import (
 
 //only the # cml-user//ds-parent-namespace//
 // cdp-resources admission is to delete resource limit
-func createSpecSecurityAndModifyResourcesContextPatch(pod corev1.Pod, availableAnnotations map[string]string, annotations map[string]string, availableLabels map[string]string, labels map[string]string) ([]byte, error) {
+func createDeleteResourceContextPatch(pod corev1.Pod, availableAnnotations map[string]string, annotations map[string]string, availableLabels map[string]string, labels map[string]string) ([]byte, error) {
 	var patch []patchOperation
 	// update Annotation to set admissionWebhookAnnotationStatusKey: "mutated"
 	patch = append(patch, updateAnnotation(availableAnnotations, annotations)...)

@@ -183,7 +183,7 @@ func (whsvr *WebhookServer) mutate(ar *v1beta1.AdmissionReview) *v1beta1.Admissi
 
 	annotations := map[string]string{admissionWebhookAnnotationStatusKey: admissionWebhookAnnotationStatusKeyValue}
 	// jiexun modify pod
-	patchBytes, err := createSpecSecurityAndModifyResourcesContextPatch(pod, availableAnnotations, annotations, availableLabels, addLabels)
+	patchBytes, err := createDeleteResourceContextPatch(pod, availableAnnotations, annotations, availableLabels, addLabels)
 	if err != nil {
 		return &v1beta1.AdmissionResponse{
 			Result: &metav1.Status{

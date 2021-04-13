@@ -1,11 +1,11 @@
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: mutating-webhook-cml-user-cfg
+  name: mutating-webhook-cdp-resources-cfg
   labels:
     app: cdp-resources
 webhooks:
-  - name: mutating-cml-user.datacreating.com
+  - name: mutating-cdp-resources.datacreating.com
     clientConfig:
       service:
         name: cdp-resources-svc

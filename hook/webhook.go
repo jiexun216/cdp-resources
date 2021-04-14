@@ -29,11 +29,6 @@ var (
 		metav1.NamespaceSystem,
 		metav1.NamespacePublic,
 	}
-	// add labels after mutated
-	addLabels = map[string]string{
-		nameLabel:      LABELVALUE,
-		instanceLabel:  LABELVALUE,
-	}
 )
 
 const (
@@ -48,13 +43,6 @@ const (
 	// admissionWebhookAnnotationStatusKey's value
 	admissionWebhookAnnotationStatusKeyValue = "mutated"
 
-	// add the object labels
-	nameLabel      = "app.kubernetes.io/cdp-resources"
-
-	instanceLabel  = "app.kubernetes.io/cdp-resources-instance"
-
-	// add the object labels‘ value
-	LABELVALUE = "has_set"
 )
 
 type WebhookServer struct {
@@ -146,7 +134,7 @@ func (whsvr *WebhookServer) ServerHandle(w http.ResponseWriter, r *http.Request)
 func (whsvr *WebhookServer) mutate(ar *v1beta1.AdmissionReview) *v1beta1.AdmissionResponse {
 	req := ar.Request
 	var (
-		availableLabels, availableAnnotations map[string]string
+		availableAnnotations map[string]string
 		objectMeta                            *metav1.ObjectMeta
 		resourceNamespace, resourceName       string
 	)
@@ -171,7 +159,6 @@ func (whsvr *WebhookServer) mutate(ar *v1beta1.AdmissionReview) *v1beta1.Admissi
 		}
 	}
 	resourceName, resourceNamespace, objectMeta = pod.Name, pod.Namespace, &pod.ObjectMeta
-	availableLabels = pod.Labels
 
 	// if can mutate
 	if !mutationRequired(ignoredNamespaces, objectMeta) {
@@ -183,7 +170,7 @@ func (whsvr *WebhookServer) mutate(ar *v1beta1.AdmissionReview) *v1beta1.Admissi
 
 	annotations := map[string]string{admissionWebhookAnnotationStatusKey: admissionWebhookAnnotationStatusKeyValue}
 	// jiexun modify pod
-	patchBytes, err := createDeleteResourceContextPatch(pod, availableAnnotations, annotations, availableLabels, addLabels)
+	patchBytes, err := createDeleteResourceContextPatch(pod, availableAnnotations, annotations)
 	if err != nil {
 		return &v1beta1.AdmissionResponse{
 			Result: &metav1.Status{

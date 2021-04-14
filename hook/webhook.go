@@ -104,7 +104,7 @@ func (whsvr *WebhookServer) ServerHandle(w http.ResponseWriter, r *http.Request)
 			},
 		}
 	} else {
-		glog.Infof("request to webhook for path=%v, and requestResourceName=%v, and requestResourceNameSpace=%v, and requestResourceKind=%v;", r.URL.Path, ar.Request.Name, ar.Request.Namespace, ar.Request.Kind)
+		//glog.Infof("request to webhook for path=%v, and requestResourceName=%v, and requestResourceNameSpace=%v, and requestResourceKind=%v;", r.URL.Path, ar.Request.Name, ar.Request.Namespace, ar.Request.Kind)
 		if r.URL.Path == "/mutate" {
 			admissionResponse = whsvr.mutate(&ar)
 		}
@@ -139,8 +139,6 @@ func (whsvr *WebhookServer) mutate(ar *v1beta1.AdmissionReview) *v1beta1.Admissi
 		resourceNamespace, resourceName       string
 	)
 
-	glog.Infof("AdmissionReview for Kind=%v, Namespace=%v Name=%v (%v) UID=%v patchOperation=%v UserInfo=%v",
-		req.Kind, req.Namespace, req.Name, resourceName, req.UID, req.Operation, req.UserInfo)
 
 	if req.Kind.Kind != "Pod" {
 		glog.Infof("Skipping mutate for %s/%s,the resourse kind is %s, due to the kind is not pod", resourceNamespace, resourceName, req.Kind.Kind)
@@ -159,6 +157,8 @@ func (whsvr *WebhookServer) mutate(ar *v1beta1.AdmissionReview) *v1beta1.Admissi
 		}
 	}
 	resourceName, resourceNamespace, objectMeta = pod.Name, pod.Namespace, &pod.ObjectMeta
+	glog.Infof("AdmissionReview for Kind=%v, Namespace=%v Name=%v (%v) UID=%v patchOperation=%v UserInfo=%v",
+		req.Kind, req.Namespace, req.Name, resourceName, req.UID, req.Operation, req.UserInfo)
 
 	// if can mutate
 	if !mutationRequired(ignoredNamespaces, objectMeta) {

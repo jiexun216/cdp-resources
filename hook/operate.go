@@ -33,10 +33,11 @@ func createDeleteResourceContextPatch(pod corev1.Pod, availableAnnotations map[s
 	// delete pod resourse
 	var size = len(pod.Spec.Containers)
 	for i := 0; i < size; i++ {
+		glog.Infof("pod container name:%s resource for value: %v", pod.Spec.Containers[i].Name, pod.Spec.Containers[i].Resources)
 		removeResourse := patchOperation{
 			Op:    "replace",
 			Path:  "/spec/containers/" + strconv.Itoa(i) + "/resources",
-			Value: nil,
+			Value: corev1.ResourceRequirements{},
 		}
 		glog.Infof("remove  pod container resource for value: %v", removeResourse)
 		patch = append(patch, removeResourse)
